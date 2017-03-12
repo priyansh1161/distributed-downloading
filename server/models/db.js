@@ -25,11 +25,7 @@ process.once('SIGUSR2',function () {
         process.kill(process.pid,'SIGUSR2');
    });
 });
-// process.on('SIGKILL',function () {
-//     gracefulShutdown('SIGKILL',function () {
-//         process.exit(0);
-//     });
-// });
+
 process.on('SIGINT',function () {
     gracefulShutdown('SIGINT',function () {
         process.exit(0);
@@ -40,3 +36,5 @@ process.on('SIGTERM',function () {
         process.exit(0);
     });
 });
+
+require('./file');
