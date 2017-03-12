@@ -40,17 +40,16 @@ let saveToDb = (file, url) => {
         url,
         encoding : null
     },(err, response, body)=>{
-        if(err){
-            console.log(err);
+        if(err || response.statusCode !== 200){
             file.status = 'failed';
-            file.reason = err.message;
+            file.reason = err ? err.message : 'Wrong url' ;
             file.save(function (err, data) {
                 //todo handle 2nd layer errors
             });
+            return;
         }
         file.parts = makeParts(body,partCount);
         file.status = 'done';
-        console.log(file.parts);
         file.save(function (err, data) {
             //todo handle 2nd layer errors
         });
@@ -66,6 +65,7 @@ router.post('/',(req, res) => {
     File
         .create({
             name,
+            ext,
             partCount: parts
         })
         .then((data)=>{
