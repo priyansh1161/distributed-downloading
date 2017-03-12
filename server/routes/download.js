@@ -1,8 +1,9 @@
-let express = require('express');
-let request = require('request');
-let mongoose = require('mongoose');
+const express = require('express');
+const request = require('request');
+const zlib = require('zlib');
+const mongoose = require('mongoose');
 const File = mongoose.model('file');
-let router = express.Router();
+const router = express.Router();
 
 function sendJSON(obj,status,res){
     res.status(status);

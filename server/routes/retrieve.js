@@ -1,13 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const zlib = require('zlib');
 const File = mongoose.model('file');
+
 const router = express.Router();
 
 function sendJSON(obj,status,res){
     res.status(status);
     res.send(obj);
 }
-
 
 router.post('/', (req, res) => {
    if(!req.body._id && !req.body.index){
@@ -20,7 +21,14 @@ router.post('/', (req, res) => {
            if(err){
                 return sendJSON(err,500,res);
            }
-           res.send(data.parts[0] && data.parts[0].toString('hex'));
+           if(Object.keys(data).length === 0){
+               return sendJSON({type : 'error', reason : 'Invalid _id'},404,res);
+           }
+           zlib.deflate(data.parts[0], (err,buff) => {
+               if(err)
+                   return sendJSON(err,500,res);
+               res.send(buff);
+           });
    });
 
 });
