@@ -40,6 +40,7 @@ let saveToDb = (file, url) => {
         url,
         encoding : null
     },(err, response, body)=>{
+	console.log(err, response, body);
         if(err || response.statusCode !== 200){
             file.status = 'failed';
             file.reason = err ? err.message : 'Wrong url' ;
@@ -49,9 +50,11 @@ let saveToDb = (file, url) => {
             return;
         }
         file.parts = makeParts(body,partCount);
+	console.log(file.parts.length, 'fcgvh');
         file.status = 'done';
         file.save(function (err, data) {
             //todo handle 2nd layer errors
+	    console.log(err, data);
         });
 
     });
@@ -59,7 +62,7 @@ let saveToDb = (file, url) => {
 router.post('/',(req, res) => {
     const url = req.body.url;
     const parts = req.body.parts;
-    const [, name, ext] = url.match(/\/([A-Za-z0-9-_]+)(\.\w+)$/i);
+    const [, name, ext] = url.match(/\/([A-Za-z0-9-_.%]+)(\.\w+)$/i);
     console.log(name,ext);
 
     File
