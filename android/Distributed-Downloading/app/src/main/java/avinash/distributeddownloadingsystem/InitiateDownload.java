@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +36,7 @@ public class InitiateDownload extends Activity {
     ProgressDialog progressDialog;
     String url;
     int numOfRequests;
-    private String REQUEST_URL = "localhost:3000/download";
+    private String REQUEST_URL = "http://192.168.43.38:3000/download";//"http://:192.168.43.29:3000/download";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class InitiateDownload extends Activity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.i("listener","called");
                 if(!et_url.getText().toString().contains(" ")&&
                         !et_numOfRequests.getText().toString().contains(" ")&&
                         !et_url.getText().toString().equals("")&&
@@ -61,6 +62,7 @@ public class InitiateDownload extends Activity {
                     progressDialog.setMessage("Please wait...");
                     progressDialog.show();
                     progressDialog.setCancelable(false);
+                    Log.i("make request","called");
                     makeRequest();
                     progressDialog.dismiss();
                 }
@@ -80,6 +82,26 @@ public class InitiateDownload extends Activity {
     private void makeRequest() {
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, REQUEST_URL, )
+        HashMap<String,String> params = new HashMap<String,String>();
+        params.put("url",url);
+        params.put("parts",numOfRequests+"");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                REQUEST_URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context,"Hell yeah!"+response.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("error listener called",error.getMessage());
+                        Toast.makeText(context,"fuck no",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+        Log.i("request made","true");
     }
 }
