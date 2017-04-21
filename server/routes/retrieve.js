@@ -24,11 +24,12 @@ router.post('/', (req, res) => {
            if(Object.keys(data).length === 0){
                return sendJSON({type : 'error', reason : 'Invalid _id'},404,res);
            }
-           zlib.deflate(data.parts[0], (err,buff) => {
-               if(err)
-                   return sendJSON(err,500,res);
-               res.send(buff);
-           });
+           res.send(data.parts[0]);
+           // zlib.deflate(data.parts[0], (err,buff) => {
+           //     if(err)
+           //         return sendJSON(err,500,res);
+           //     res.send(buff);
+           // });
    });
 
 });
