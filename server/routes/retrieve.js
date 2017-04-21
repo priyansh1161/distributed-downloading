@@ -24,6 +24,7 @@ router.post('/', (req, res) => {
            if(Object.keys(data).length === 0){
                return sendJSON({type : 'error', reason : 'Invalid _id'},404,res);
            }
+           // console.log(data.parts);
            res.send(data.parts[0]);
            // zlib.deflate(data.parts[0], (err,buff) => {
            //     if(err)
